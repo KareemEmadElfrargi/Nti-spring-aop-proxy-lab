@@ -1,5 +1,10 @@
 package org.example;
 
+import org.springframework.aop.Advisor;
+import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.aop.support.DefaultPointcutAdvisor;
+import org.springframework.aop.support.NameMatchMethodPointcut;
+import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,11 +38,21 @@ public class AppConfig {
     }
 
     @Bean
+    public Advisor loggingBeforeAdvisor() {
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
+        pointcut.setMappedName("reserveStock");
+        Advisor advisor = new DefaultPointcutAdvisor(pointcut, new LoggingBeforeAdvice());
+        ProxyFactory factory = new ProxyFactory();
+        return advisor;
+    }
+
+    @Bean
     public ProxyFactoryBean inventoryService() {
+
         ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
         proxyFactoryBean.setTarget(inventoryServiceTarget());
         proxyFactoryBean.setInterfaces(InventoryService.class);
-        proxyFactoryBean.addAdvice(loggingBeforeAdvice());
+        proxyFactoryBean.addAdvisor(loggingBeforeAdvisor());
         proxyFactoryBean.addAdvice(loggingAfterReturningAdvice());
         proxyFactoryBean.addAdvice(loggingThrowsAdvice());
         proxyFactoryBean.addAdvice(loggingMethodInterceptor());
