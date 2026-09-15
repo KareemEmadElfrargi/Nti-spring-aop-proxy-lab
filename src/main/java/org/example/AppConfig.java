@@ -1,6 +1,6 @@
 package org.example;
 
-import org.springframework.aop.framework.ProxyFactory;
+import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -28,12 +28,19 @@ public class AppConfig {
     }
 
     @Bean
-    public InventoryService inventoryService() {
-        ProxyFactory proxyFactory = new ProxyFactory(new InventoryServiceImpl());
-        proxyFactory.addAdvice(loggingBeforeAdvice());
-        proxyFactory.addAdvice(loggingAfterReturningAdvice());
-        proxyFactory.addAdvice(loggingThrowsAdvice());
-        proxyFactory.addAdvice(loggingMethodInterceptor());
-        return (InventoryService) proxyFactory.getProxy();
+    public InventoryServiceImpl inventoryServiceTarget() {
+        return new InventoryServiceImpl();
+    }
+
+    @Bean
+    public ProxyFactoryBean inventoryService() {
+        ProxyFactoryBean proxyFactoryBean = new ProxyFactoryBean();
+        proxyFactoryBean.setTarget(inventoryServiceTarget());
+        proxyFactoryBean.setInterfaces(InventoryService.class);
+        proxyFactoryBean.addAdvice(loggingBeforeAdvice());
+        proxyFactoryBean.addAdvice(loggingAfterReturningAdvice());
+        proxyFactoryBean.addAdvice(loggingThrowsAdvice());
+        proxyFactoryBean.addAdvice(loggingMethodInterceptor());
+        return proxyFactoryBean;
     }
 }
