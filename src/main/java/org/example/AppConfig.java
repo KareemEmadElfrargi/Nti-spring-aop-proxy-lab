@@ -15,6 +15,11 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 public class AppConfig {
 
     @Bean
+    public CacheableAspect cacheableAspect() {
+        return new CacheableAspect();
+    }
+
+    @Bean
     public AroundLoggingAspect aroundLoggingAspect() {
         return new AroundLoggingAspect();
     }

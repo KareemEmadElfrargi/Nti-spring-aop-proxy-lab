@@ -8,6 +8,7 @@ public class Main {
                      new AnnotationConfigApplicationContext(AppConfig.class)) {
             InventoryService inventoryService = context.getBean("inventoryService", InventoryService.class);
             inventoryService.checkStock("SKU-123");
+            inventoryService.checkStock("SKU-123"); // served from cache
             inventoryService.reserveStock("SKU-123", 5);
             try { inventoryService.reserveStock("SKU-123", 101); } catch (IllegalArgumentException e) { System.out.println("caller caught: " + e.getMessage()); }
         }

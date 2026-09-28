@@ -1,6 +1,7 @@
 package org.example;
 
 public class InventoryServiceImpl implements InventoryService {
+    @Cacheable(cacheName = "stock", ttlSeconds = 60)
     @Override
     public int checkStock(String sku) {
         System.out.println("Check stock in a real method " + sku);
