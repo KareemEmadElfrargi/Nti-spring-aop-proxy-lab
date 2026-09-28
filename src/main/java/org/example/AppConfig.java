@@ -8,9 +8,16 @@ import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @Configuration
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class AppConfig {
+
+    @Bean
+    public AroundLoggingAspect aroundLoggingAspect() {
+        return new AroundLoggingAspect();
+    }
 
     @Bean
     public LoggingBeforeAdvice loggingBeforeAdvice() {
@@ -37,8 +44,7 @@ public class AppConfig {
         return new InventoryServiceImpl();
     }
 
-    @Bean
-    public Advisor loggingBeforeAdvisor() {
+    private Advisor loggingBeforeAdvisor() {
         NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
         pointcut.setMappedName("reserveStock");
         Advisor advisor = new DefaultPointcutAdvisor(pointcut, new LoggingBeforeAdvice());
